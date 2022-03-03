@@ -1,5 +1,5 @@
 
-# Corramal
+# mCorrect
 
 A python implementation of the Techniques presented in '[1]' for model selection and correlation structure estimation in multiple datasets.
 Given a multi-modal dataset, this technique estimates the following:

@@ -26,23 +26,28 @@ To install the toolbox and the required packages, (it is recommended to create a
 ```
  git clone https://github.com/praneeth-b/corramal.git
 
-cd Corramal/
+cd mCorrect/
 
 python setup.py install
 
-
-cd Corramal/
-
-python setup.py install
 
 ```
 
 ## Repository Structure
 
-* datagen: Contains methods to generate two or multiple datasets for a given correlation structure
-* linear_corramal: consists algorithms for linear methods to perform correlation analysis
-* metrics: implemtation of metrics to assess the performance of various algorithms
-* visualization: methods to visualize the correllation structure between various datasets
+- ``mCorrect.datagen``: Consists of methods to generate synthetic multi-datasets based on a given correlation structure input.
+
+- ``mCorrect.linear_mcorrect``: Consists of linear techniques(algorithms) to perform correlation analysis on multi-datasets.
+
+- ``mCorrect.nonlinear_mcorrect`` (Todo): Consists of non-linear techniques(algorithms) to perform correlation analysis on multi-datasets.
+
+- ``mCorrect.examples``: Contains example files describing the usage of the algorithms of the toolbox.
+- ``mCorrect.visualization`` : Contains methods to graphically visualize the correlation sturcture in multiple datasets.
+
+- ``mCorrect.metrics``: Contains the methods to measure performance metrics of the algorithms.
+
+- ``mCorrect.utils``: Contains helper functions used throughout the toolbox.
+
 
 
 ## References

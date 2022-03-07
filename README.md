@@ -33,6 +33,9 @@ python setup.py install
 
 ```
 
+The example notebook contains a tutorial style jupyter notebook which demontrates the usage of various modules of the toolbox within executable cells which can be found [here](https://github.com/praneeth-b/mCorrect/blob/main/mCorrect/examples/linear_mcorrect/example.ipynb)
+
+
 ## Repository Structure
 
 - ``mCorrect.datagen``: Consists of methods to generate synthetic multi-datasets based on a given correlation structure input.

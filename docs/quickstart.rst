@@ -1,7 +1,7 @@
 *************
 Quick start
 *************
-
+This is an overview on how to get started with the mCorrect toolbox and to get familiar with the structure of the toolbox.
 
 Installation
 =============
@@ -38,7 +38,8 @@ Repository structure
 
 
 
-
+  
+==================
 
 
 

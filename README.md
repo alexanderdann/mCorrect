@@ -30,7 +30,6 @@ cd mCorrect/
 
 python setup.py install
 
-
 ```
 
 ## Repository Structure

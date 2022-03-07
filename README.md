@@ -32,6 +32,7 @@ python setup.py install
 
 ```
 
+
 ## Repository Structure
 
 - ``mCorrect.datagen``: Consists of methods to generate synthetic multi-datasets based on a given correlation structure input.
@@ -40,7 +41,7 @@ python setup.py install
 
 - ``mCorrect.nonlinear_mcorrect`` (Todo): Consists of non-linear techniques(algorithms) to perform correlation analysis on multi-datasets.
 
-- ``mCorrect.examples``: Contains example files describing the usage of the algorithms of the toolbox.
+- ``mCorrect.examples``: Contains example files describing the usage of the algorithms of the toolbox. The example notebook contains a tutorial style jupyter notebook which demontrates the usage of various modules of the toolbox within executable cells which can be found [here](https://github.com/praneeth-b/mCorrect/blob/main/mCorrect/examples/linear_mcorrect/example.ipynb)
 - ``mCorrect.visualization`` : Contains methods to graphically visualize the correlation sturcture in multiple datasets.
 
 - ``mCorrect.metrics``: Contains the methods to measure performance metrics of the algorithms.

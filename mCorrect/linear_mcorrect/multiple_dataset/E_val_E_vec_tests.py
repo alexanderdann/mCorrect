@@ -36,7 +36,15 @@ class jointEVD(object):
         self.M = X_cell[0].shape[1]
 
     def augmentData(self, data_cell):
+        """
 
+        Args:
+            data_cell: (list of ndarray) : The multiple dataset
+
+        Returns: Augmented array of all the datasets in the input multi-dataset.
+
+
+        """
         P = len(data_cell)  # number of datasets
         M = data_cell[0].shape[1]  # number of samples
         x_aug = []
@@ -50,6 +58,14 @@ class jointEVD(object):
         return np.array(x_aug), Rxx_mH, m
 
     def generateInv_RD_cap(self, data_cell):
+        """
+
+        Args:
+            data_cell: The multiple dataset
+
+        Returns:
+
+        """
 
         P = len(data_cell)  # number of datasets
         M = data_cell[0].shape[1]  # number of samples
@@ -175,6 +191,16 @@ class jointEVD(object):
         
         
     def estimate_signals(self, data_cell, d_cap, u_struc):
+        """
+
+        Args:
+            data_cell: Input multi-dataset as a list of ndarray.
+            d_cap:  The number of correlated components in the multi-dataset
+            u_struc: The correlation structure within the multi-dataset.
+
+        Returns:
+
+        """
         P = len(data_cell)
         M = data_cell[0].shape[1]
         _, Rxx_mH, m = self.augmentData(data_cell)

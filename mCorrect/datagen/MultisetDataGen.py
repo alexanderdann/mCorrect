@@ -21,22 +21,19 @@ class MultisetDataGen_CorrMeans(object):
         """
 
         Args:
-            subspace_dims (array): The ith element is the subspace dimension of the ith data set.
             signum (int): Number of signals in a dataset.
             x_corrs (array): List of tuples containing pair-wise combinations of the datasets.
             mixing (str): 'orth' or 'randn'. Describes the type of mixing matrix.
             snr (float): The required signal to noise ratio.
             color (str): 'white' for additive white noise and 'color' for colored noise.
             n_sets (int): Number of datasets
-
+            tot_dims (int): The required dimension of each dataset in the multi-dataset.
             p (ndarray):  Matrix of size 'n_sets choose two' x signum. Rows have the same order as x_corrs.
             The ith element of the jth row is the correlation coefficient between the ith signals in the data sets
             indicated by the jth row of self.x_corrs.
-
-            sigma_signals (): Matrix of size (n_sets x signum) x (n_sets x signum). Augmented block
-            correlation matrix of all the data sets. Each block is of size signum x signum and the i-jth block is the
-            correlation matrix between data set i and data set j.
-
+            sigmad (int): Standard deviation of the correlation coefficient of the correlated components.
+            sigmaf (int): Standard deviation of the correlation coefficient of the independent components.
+            snr (float): The required signal to noise ratio in the signals of the generated dataset.
             M (int): Number of samples per dataset
             MAcoeff (array): array of size 'degree of MA dependency' x 1. Moving average coefficients for colored noise.
             ARcoeff (array): array of size 'degree of AR dependency' x 1. Auto-regressive coefficients for colored noise.
@@ -72,6 +69,14 @@ class MultisetDataGen_CorrMeans(object):
         self.X = [0] * self.n_sets
 
     def get_sigma_signals(self, p, sigmad, sigmaf):
+        """
+        Computes the matrix of standard deviations for the multi-dataset
+
+        Returns: sigma_signals (ndarray): Matrix of size (n_sets x signum) x (n_sets x signum). Augmented block.
+            correlation matrix of all the data sets. Each block is of size signum x signum and the i-jth block is the
+            correlation matrix between data set i and data set j.
+        """
+
         sigma_signals = np.ones((p.shape[0], p.shape[1]))*sigmaf
         sigma_signals[np.nonzero(p)] = sigmad
         return sigma_signals
@@ -81,7 +86,6 @@ class MultisetDataGen_CorrMeans(object):
     def generateMixingMatrix(self):
         """
         computes the mixing matrices
-        Returns:
 
         """
         # print(self.mixing)
@@ -101,7 +105,6 @@ class MultisetDataGen_CorrMeans(object):
     def generateBlockCorrelationMatrix(self):
         """
         Compute the pairwise correlation and assemble the correlation matrices into augmented block correlation matrix
-        Returns:
 
         """
         Rxy = [0] * comb(self.n_sets, 2)
@@ -135,9 +138,7 @@ class MultisetDataGen_CorrMeans(object):
 
     def generateData(self):
         """
-
-        Returns:
-
+         Generates the data which is formed by mixing the signal with the desired type of noise
         """
         if self.Distr == 'gaussian':
             evr, evec = np.linalg.eig(self.R)
@@ -163,8 +164,6 @@ class MultisetDataGen_CorrMeans(object):
     def filterNoise(self):
         """
         Filter the noise to be colored if specified
-
-        Returns:
 
         """
 

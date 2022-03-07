@@ -9,6 +9,17 @@ import matplotlib.pyplot as plt
 
 
 def run_example():
+    """
+    This example performs correlation structure estimation on a multi-dataset consisting of 4 datasets with 5 signals each.
+    Here, the correlation structure is such that:
+    * 1 signal is correlated among all 4 datasets.
+    * 1 signal is correlated among 3 of the 4 datasets.
+    * 1 signal is correlated among just 2 of the 4 datasets.
+    The jointEVD algorithm is used to estimate the number and structure of the correlated components of the multi-dataset.
+
+    """
+
+
     corr_obj = CorrelationStructureGen(n_sets=4, signum=5, tot_dims= 6,tot_corr=[4, 3, 2], percentage=False)
 
     corr_truth, p_matrix, sigma_signals, R_matrix = corr_obj.get_structure()
@@ -24,7 +35,7 @@ def run_example():
     viz_op.visualize("Estimated_structure")
 
     # print("experiment complete")
-    print(f'the end')
+    print(f'experiment complete')
 
 
 if __name__ == "__main__":

@@ -1,6 +1,9 @@
 ==================
-mCorrect
+Introduction
 ==================
+
+mCorrect
+-----------------
 
 **mCorrect: multiset correlation estimation, computation, and testing**
 

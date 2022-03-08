@@ -17,6 +17,8 @@ Welcome to mCorrect's documentation!
 Indices and tables
 ==================
 
-* :ref:`genindex`
+.. * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
+* :ref:`genindex`
+
+.. * :ref:`search`

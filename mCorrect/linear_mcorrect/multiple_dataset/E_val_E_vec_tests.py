@@ -18,6 +18,7 @@ class jointEVD(object):
 
 
     """
+
     def __init__(self, X_cell, P_fa_eval=0.05, P_fa_evec=0.05, B=1000, evec_threshold=0):
         """
 
@@ -88,7 +89,7 @@ class jointEVD(object):
         M = data_cell[0].shape[1]
         X_aug, _, _ = self.augmentData(data_cell)
         X_aug_h = np.transpose(X_aug.conjugate())
-        Rxx_aug = np.matmul(X_aug, X_aug_h)/self.M
+        Rxx_aug = np.matmul(X_aug, X_aug_h) / self.M
         return Rxx_aug
 
     def generate_C(self, data_cell):
@@ -163,7 +164,7 @@ class jointEVD(object):
             U_star_matrix.append(U_star)
 
         E_star_matrix = np.array(E_star_matrix).T
-        #U_star_matrix = U_star_matrix
+        # U_star_matrix = U_star_matrix
 
         m_min = self.x_cell[0].shape[0]  # assuming all datasets have same num of features.
         d_cap = Hypothesis_Test().Eigen_value_test(P, m_min, self.P_fa_eval, E, E_star_matrix, self.B)
@@ -188,9 +189,33 @@ class jointEVD(object):
 
         corr_struc = np.transpose(corr_struc)
         return corr_struc, d_cap, U_struc
-        
-        
-    def estimate_signals(self, data_cell, d_cap, u_struc):
+
+    def get_reduced_structure_matrix(self, n_sets, d_cap, corr_struc):
+        """
+
+        Args:
+            d_cap: number of correlated components
+            corr_struc: correlation structure matrix
+
+        Returns: Reduced correlation structure matrix
+
+        """
+        corr_idx = list(combinations(range(n_sets), 2))
+        corr_idx = list(reversed(corr_idx))
+        u_struc = np.zeros((d_cap, n_sets))
+
+        for i in range(d_cap):
+            n_id = np.where(corr_struc[i, :] == 1)
+            n_id = n_id[0]
+            print(n_id)
+            for j in range(len(n_id)):
+                u_idx = corr_idx[n_id[j]]
+                u_struc[i, u_idx[0]] = 1
+                u_struc[i, u_idx[1]] = 1
+
+        return u_struc
+
+    def estimate_signals(self, data_cell, d_cap, corr_est):
         """
 
         Args:
@@ -204,7 +229,7 @@ class jointEVD(object):
         P = len(data_cell)
         M = data_cell[0].shape[1]
         _, Rxx_mH, m = self.augmentData(data_cell)
-
+        u_struc = self.get_reduced_structure_matrix(n_sets=len(data_cell), d_cap=d_cap, corr_struc=corr_est)
         Cxx_aug, aug_dim = self.generate_C(data_cell)
         E, U = self.calc_Eval_Evec(Cxx_aug)
         Sig_estimate = []
@@ -227,4 +252,3 @@ class jointEVD(object):
             Sig_estimate.append(Sig)
 
         return Sig_estimate
-

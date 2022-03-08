@@ -16,7 +16,7 @@ class MultisetDataGen_CorrMeans(object):
 
     """
 
-    def __init__(self, n_sets=4, signum=5, p=None, tot_dims=None, mixing='orth', sigmad=10, sigmaf=3, snr=10, color='white',
+    def __init__(self, n_sets=4, signum=4, p=None, tot_dims=None, mixing='orth', sigmad=10, sigmaf=3, snr=10, color='white',
                  M=300, MAcoeff=1, ARcoeff=1, Distr='gaussian', R=0):
         """
 
@@ -47,7 +47,7 @@ class MultisetDataGen_CorrMeans(object):
             self.tot_dims = signum
         else:
             self.tot_dims = tot_dims
-        self.subspace_dims = np.array([tot_dims] * n_sets)
+        self.subspace_dims = np.array([self.tot_dims] * n_sets)
         self.x_corrs = list(combinations(range(n_sets), 2))
         self.x_corrs = list(reversed(self.x_corrs))
         self.mixing = mixing

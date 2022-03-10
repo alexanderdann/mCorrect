@@ -36,6 +36,13 @@ class visualization(object):
         self.label_edge = label_edge
 
     def create_subplots(self, shape, fig_name):
+        """
+        Sets the axes of the sub-plots along with the initialization of the figure.
+        Args:
+            shape: The organization of the sub-lots in the figure.
+            fig_name: Name of the figure.
+
+        """
 
         fig, axes = plt.subplots(*shape)
         fig.suptitle(fig_name)

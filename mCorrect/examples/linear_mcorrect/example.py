@@ -17,15 +17,17 @@ def run_example():
 
     """
 
-    n_sets = 1
+    n_sets = 4
     signum = 5
-    corr_obj = CorrelationStructureGen(n_sets=n_sets, signum=signum,tot_corr=[4, 3, 2], percentage=False)
+    tot_dims = 3
+    corr_obj = CorrelationStructureGen(n_sets=n_sets, signum=signum, tot_dims=tot_dims, tot_corr=[4, 3, 2], percentage=False)
 
-    corr_truth, p_matrix, sigma_signals, R_matrix = corr_obj.get_structure()
-    datagen = MultisetDataGen_CorrMeans(n_sets=n_sets, signum=signum, p=p_matrix, R=R_matrix, M=800, color='white')  # chk color
+    corr_structure = corr_obj.get_structure()
+    corr_truth = corr_structure.corr_truth
+    datagen = MultisetDataGen_CorrMeans(corr_structure=corr_structure, tot_dims=tot_dims, M=300, color='white')  # chk color
     X, _ = datagen.generate()
     corr_test = jointEVD(X, B=1000)
-    corr_estimate, d_cap, u_struc1 = corr_test.find_structure()
+    corr_estimate, d_cap = corr_test.find_structure()
     plt.ion()
     viz = visualization(graph_matrix=corr_truth, num_dataset=n_sets, label_edge=False)
     viz.visualize("True Structure")

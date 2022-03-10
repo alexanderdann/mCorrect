@@ -4,7 +4,6 @@ import random
 import math
 import scipy as sp
 import scipy.linalg as spl
-
 from mCorrect.utils.helper import ismember, comb, list_find
 
 
@@ -16,19 +15,19 @@ class MultisetDataGen_CorrMeans(object):
 
     """
 
-    def __init__(self, n_sets=4, signum=4, p=None, tot_dims=None, mixing='orth', sigmad=10, sigmaf=3, snr=10, color='white',
-                 M=300, MAcoeff=1, ARcoeff=1, Distr='gaussian', R=0):
+    def __init__(self, corr_structure, tot_dims=None, mixing='orth', sigmad=10, sigmaf=3, snr=10, color='white',
+                 M=300, MAcoeff=1, ARcoeff=1, Distr='gaussian'):
         """
 
         Args:
-            signum (int): Number of signals in a dataset.
+            corr_structure (CorrelationStructure): Object containing the correlation structure information of
+            the generated correllation structure.
+
             x_corrs (array): List of tuples containing pair-wise combinations of the datasets.
             mixing (str): 'orth' or 'randn'. Describes the type of mixing matrix.
             snr (float): The required signal to noise ratio.
             color (str): 'white' for additive white noise and 'color' for colored noise.
-            n_sets (int): Number of datasets
             tot_dims (int): The required dimension of each dataset in the multi-dataset.
-            p (ndarray):  Matrix of size 'n_sets choose two' x signum. Rows have the same order as x_corrs.
             The ith element of the jth row is the correlation coefficient between the ith signals in the data sets
             indicated by the jth row of self.x_corrs.
             sigmad (int): Standard deviation of the correlation coefficient of the correlated components.
@@ -40,21 +39,21 @@ class MultisetDataGen_CorrMeans(object):
             Distr (str): 'gaussian' or 'laplacian'. Specifies the distribution of the signal components.
         """
 
-        self.n_sets = n_sets
-        self.signum = signum
+        self.n_sets = corr_structure.n_sets
+        self.signum = corr_structure.signum
 
         if not tot_dims:
-            self.tot_dims = signum
+            self.tot_dims = self.signum
         else:
             self.tot_dims = tot_dims
-        self.subspace_dims = np.array([self.tot_dims] * n_sets)
-        self.x_corrs = list(combinations(range(n_sets), 2))
+        self.subspace_dims = np.array([self.tot_dims] * self.n_sets)
+        self.x_corrs = list(combinations(range(self.n_sets), 2))
         self.x_corrs = list(reversed(self.x_corrs))
         self.mixing = mixing
         self.sigmaN = sigmad / (10 ** (0.1 * snr))
         self.color = color
 
-        self.p = p
+        self.p = corr_structure.p
         self.sigma_signals = self.get_sigma_signals(self.p, sigmad, sigmaf)
         self.M = M
         self.MAcoeff = MAcoeff
@@ -62,7 +61,7 @@ class MultisetDataGen_CorrMeans(object):
         self.Distr = Distr
         self.sigmad = sigmad
         self.sigmaf = sigmaf
-        self.R = R
+        self.R = corr_structure.R
         self.A = [0] * self.n_sets
         self.S = [0] * self.n_sets
         self.N = [0] * self.n_sets
@@ -150,7 +149,7 @@ class MultisetDataGen_CorrMeans(object):
             fullS = np.zeros(signum_aug, self.M)
             for m in range(self.M):
                 pass  # figure out how to generate laplacian samples in py
-
+            raise NotImplementedError
 
         else:
             raise Exception("Unknown source distribution: {}".format(self.Distr))

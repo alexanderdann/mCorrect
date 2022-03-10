@@ -10,6 +10,16 @@ from mCorrect.visualization.graph_visu import visualization
 from mCorrect.utils.helper import ismember, comb, list_find
 
 
+class CorrelationStructure:
+
+    def __init__(self, n_sets, signum, p, R, corr_truth):
+        self.n_sets = n_sets
+        self.signum = signum
+        self.p = p
+        self.R = R
+        self.corr_truth = corr_truth
+
+
 class CorrelationStructureGen:
     """
     Description:
@@ -56,13 +66,13 @@ class CorrelationStructureGen:
         self.n_combi = len(self.x_corrs)
         self.corr_means = corr_means  # np.array([corr_means] * len(tot_corr))
         self.corr_std = corr_std  # np.array([corr_std] * len(tot_corr))
-        if corr_means==None :
+        if corr_means == None:
             self.corr_means = [0.8] * len(tot_corr)
         if corr_std == None:
             self.corr_std = [0.01] * len(tot_corr)
 
-        assert  len(tot_corr) == len(self.corr_means) == len(self.corr_std) , "corr_means and corr_std must have same dimension as tot_corr "
-
+        assert len(tot_corr) == len(self.corr_means) == len(
+            self.corr_std), "corr_means and corr_std must have same dimension as tot_corr "
 
         self.signum = signum
         self.sigmad = sigmad
@@ -119,6 +129,15 @@ class CorrelationStructureGen:
         return self.R
 
     def get_structure(self):
+        """
+
+        Returns: An object CorrelationStructure containing the following as attributes.
+                n_sets: the total number of datasets.
+                signum: the number of signals in each dataset.
+                p matrix : the matrix of correlations coefficients between the signals in the multi-dataset
+                R matrix:  Augmented block correlation matrix of all the data sets.
+                corr_truth: The ground truth correlation structure of the generated dataset.
+        """
         max_attempts = 5
         attempts = 0
         ans = "n"
@@ -136,17 +155,19 @@ class CorrelationStructureGen:
                 viz = visualization(graph_matrix=np.transpose(p), num_dataset=self.n_sets)
                 viz.visualize("Generated corr structure")
                 ans = input("Continue with generated correlation structure?: y/n")
-
             attempts += 1
         if attempts >= max_attempts:
             print("Maximum retries exceeded. Proceeding with previously generated structure")
 
-        return corr_truth, np.transpose(p), sigma_signals, R
+        #return corr_truth, np.transpose(p), R
+        return CorrelationStructure(self.n_sets, self.signum, np.transpose(p), R, corr_truth)
+
 
     def generate(self):
         """
         Generates the correlation structure of the multi dataset.
         Returns:
+
             p (ndarray): Matrix of size 'n_sets choose two' x signum. Rows have the same order as x_corrs.
             The ith element of the jth row is the correlation coefficient between the ith signals in the data sets
             indicated by the jth row of self.x_corrs.

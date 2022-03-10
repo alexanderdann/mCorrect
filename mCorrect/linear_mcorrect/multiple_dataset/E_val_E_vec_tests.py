@@ -188,7 +188,7 @@ class jointEVD(object):
                         corr_struc[iz, s] = 0
 
         corr_struc = np.transpose(corr_struc)
-        return corr_struc, d_cap, U_struc
+        return corr_struc, d_cap
 
     def get_reduced_structure_matrix(self, n_sets, d_cap, corr_struc):
         """

@@ -14,7 +14,7 @@ Welcome to mCorrect's documentation!
    quickstart
 
 
-Indices and tables
+API Reference
 ==================
 
 .. * :ref:`genindex`

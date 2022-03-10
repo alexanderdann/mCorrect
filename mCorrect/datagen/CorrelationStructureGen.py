@@ -21,29 +21,30 @@ class CorrelationStructureGen:
 
     """
 
-    def __init__(self, n_sets=4, signum=5, tot_corr=None, tot_dims=None, corr_means=.8, corr_std=0.01, sigmad=10,
+    def __init__(self, n_sets=4, signum=5, tot_corr=None, tot_dims=None, corr_means=None, corr_std=None, sigmad=10,
                  sigmaf=3, maxIters=100, percentage=False):
         """
 
         Args:
-            n_sets (int): Number of datasets
-            tot_corr (int): Number of signals/features of the datasets correlated across all datasets
-            corr_means (float):   mean of the correlation coefficients associated with the correlated signal.
-            corr_std (float):  standard deviation of the correlation coefficients associated with the correlated signal.
-            signum (int): Total number of signals in each dataset
-            sigmad (float): Variance of the correlated components
-            sigmaf (float): Variance of the independent components
+            n_sets (int): Number of datasets.
+            tot_corr (int): Number of signals/features of the datasets correlated across all datasets.
+            corr_means (list):   mean of the correlation coefficients associated with each of the correlated signals.
+            corr_std (list):  standard deviation of the correlation coefficients associated with each of the correlated signals.
+            signum (int): Total number of signals in each dataset.
+            sigmad (float): Variance of the correlated components.
+            sigmaf (float): Variance of the independent components.
             maxIters (int): Number of random draws of correlation coefficients allowed to find a positive definite
                             correlation matrix.
         """
 
         self.corrnum = len(tot_corr)
         self.n_sets = n_sets
+        assert n_sets >= 2, "a minimum of 2 datasets need to be present in order to perform correlation analysis. "
         if not tot_dims:
             tot_dims = signum
         self.tot_dims = tot_dims
         if len(tot_corr) > signum:
-            print(f"tot correllations requested is greater than the number of signals. clipping the excess values")
+            print(f"tot correllations requested is greater than the number of signals. clipping the excess values.")
             tot_corr = tot_corr[:signum]
         if not percentage:
             self.tot_corr = np.array(tot_corr)
@@ -53,8 +54,16 @@ class CorrelationStructureGen:
         self.x_corrs = list(combinations(range(self.n_sets), 2))
         self.x_corrs = list(reversed(self.x_corrs))
         self.n_combi = len(self.x_corrs)
-        self.corr_means = np.array([corr_means] * len(tot_corr))
-        self.corr_std = np.array([corr_std] * len(tot_corr))
+        self.corr_means = corr_means  # np.array([corr_means] * len(tot_corr))
+        self.corr_std = corr_std  # np.array([corr_std] * len(tot_corr))
+        if corr_means==None :
+            self.corr_means = [0.8] * len(tot_corr)
+        if corr_std == None:
+            self.corr_std = [0.01] * len(tot_corr)
+
+        assert  len(tot_corr) == len(self.corr_means) == len(self.corr_std) , "corr_means and corr_std must have same dimension as tot_corr "
+
+
         self.signum = signum
         self.sigmad = sigmad
         self.sigmaf = sigmaf

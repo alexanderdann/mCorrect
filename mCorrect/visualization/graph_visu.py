@@ -2,10 +2,10 @@ import random
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
-plt.rcParams['figure.figsize'] = [12, 8]
-plt.rcParams['figure.dpi'] = 100 # 200 e.g. is really fine, but slower
-from itertools import combinations
 
+plt.rcParams['figure.figsize'] = [12, 8]
+plt.rcParams['figure.dpi'] = 100  # 200 e.g. is really fine, but slower
+from itertools import combinations
 
 
 class visualization(object):
@@ -22,17 +22,16 @@ class visualization(object):
 
         Args:
             corr_estimate (ndarray): matrix of correlation between pairs of datasets.
-            x_corr (list): list of the pairs of datasets used in previous computations
             num_signals (int): number of signals in the datasets
             num_dataset (int): number of datasets
             label_edge (bool): setting to 'True' adds correlation coefficient as the weights of the edges
         """
         self.graph_matrix = graph_matrix
-        #self.typ2graph_matrix = corr_estimate
+        # self.typ2graph_matrix = corr_estimate
 
         self.num_nodes = num_dataset
         self.edge_list = list(reversed(list(combinations(range(self.num_nodes), 2))))  # x_corr
-        self.signals = self.graph_matrix.shape[0]   #num_signals
+        self.signals = self.graph_matrix.shape[0]  # num_signals
         self.type = gtype
         self.label_edge = label_edge
 
@@ -62,58 +61,56 @@ class visualization(object):
                 labels = nx.get_edge_attributes(g_list[i], 'weight')
                 nx.draw_networkx_edge_labels(g_list[i], pos, edge_labels=labels, font_size=7, ax=self.axes[i],
                                              label_pos=random.uniform(0.2, 0.8))
-            if np.all((self.graph_matrix[i]==0)):
+            if np.all((self.graph_matrix[i] == 0)):
                 self.axes[i].set_visible(False)
         if self.signals % 2 > 0:
             self.axes[-1].set_visible(False)
         plt.show()
 
     def generate_coordinates(self, node_list, datasets=1):
-        """
-        for type 2 graphs only
-        Args:
-            node_list ():
-            datasets ():
 
-        Returns:
+        # y = np.linspace(1, -1, self.signals + 1)
+        # x = np.linspace(-0.9, 0.9, self.num_nodes)
+        # offset_x = np.linspace(-0.9, 0, 9, self.num_nodes)
+        #
+        # # xy = map(list, zip(x, y))
+        # # pos = dict(zip(range(self.signals + 1), xy))
+        # pos = []
+        # for xi in x:
+        #     px = [xi] * (self.signals + 1)
+        #     xy = map(list, zip(px, y))
+        #     pos.append(dict(zip(range(self.signals + 1), xy)))
 
-        """
-        y = np.linspace(1, -1, self.signals + 1)
-        x = np.linspace(-0.9, 0.9, self.num_nodes)
-        offset_x = np.linspace(-0.9, 0, 9, self.num_nodes)
-
-        # xy = map(list, zip(x, y))
-        # pos = dict(zip(range(self.signals + 1), xy))
-        pos = []
-        for xi in x:
-            px = [xi] * (self.signals + 1)
-            xy = map(list, zip(px, y))
-            pos.append(dict(zip(range(self.signals + 1), xy)))
-
-        return pos
+        return NotImplementedError
 
     def create_type2_graph(self):
-        """
-        for type2 graphs only
-        Returns:
 
-        """
-        node_list = list(range(self.signals))
-        g_list = [None] * self.num_nodes
-        # glist = nx.Graph()
-        # glist.add_nodes_from(node_list)
-
-        pos_all = self.generate_coordinates(node_list, 1)
-
-        for i in range(self.num_nodes):
-            g_list[i] = nx.Graph()
-            g_list[i].add_nodes_from(node_list)
+        # node_list = list(range(self.signals))
+        # g_list = [None] * self.num_nodes
+        # # glist = nx.Graph()
+        # # glist.add_nodes_from(node_list)
+        #
+        # pos_all = self.generate_coordinates(node_list, 1)
+        #
+        # for i in range(self.num_nodes):
+        #     g_list[i] = nx.Graph()
+        #     g_list[i].add_nodes_from(node_list)
+        return NotImplementedError
 
     def visualize(self, fig_name="corr structure"):
+        """
+
+        Args:
+            fig_name: The name of the figure corresponding to the correlation structure
+
+        Returns: A graph like visualization of the correlation structure of all the correlated signals in the
+        multi-dataset. The correlations of each signal appear in a separate sub-plot. The uncorrelated signals are not
+        displayed
+
+        """
         if self.type == 1:
             self.create_subplots((int(np.ceil(self.signals / 2)), 2), fig_name)
             self.create_graph_nodes()
 
         if self.type == 2:
             raise Exception("NOt Implemented")
-

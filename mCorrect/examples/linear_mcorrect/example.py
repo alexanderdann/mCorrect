@@ -17,7 +17,7 @@ def run_example():
 
     """
 
-    n_sets = 4
+    n_sets = 1
     signum = 5
     corr_obj = CorrelationStructureGen(n_sets=n_sets, signum=signum,tot_corr=[4, 3, 2], percentage=False)
 

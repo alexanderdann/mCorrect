@@ -90,13 +90,17 @@ class MultisetDataGen_CorrMeans(object):
         # print(self.mixing)
         if self.mixing == 'orth':
             for i in range(self.n_sets):
-                orth_Q = spl.orth(np.random.randn(self.subspace_dims[i],
-                                                  self.signum))  # np.linalg.qr(np.random.randn(self.subspace_dims[i], self.signum))
+                if self.tot_dims >= self.signum:
+                    orth_Q = spl.orth(np.random.randn(self.tot_dims,
+                                                  self.signum))
+                else:
+                    orth_Q = spl.orth(np.transpose(np.random.randn(self.tot_dims,
+                                                  self.signum)))
                 self.A[i] = orth_Q
 
         elif self.mixing == 'randn':
             for i in range(self.n_sets):
-                self.A[i] = np.random.randn(self.subspace_dims[i], self.signum)
+                self.A[i] = np.random.randn(self.tot_dims, self.signum)  # replace with totdims
 
         else:
             raise Exception("Unknown mixing matrix property")
@@ -140,16 +144,18 @@ class MultisetDataGen_CorrMeans(object):
          Generates the data which is formed by mixing the signal with the desired type of noise
         """
         if self.Distr == 'gaussian':
-            evr, evec = np.linalg.eig(self.R)
-            evr = np.sort(evr)
+            # evr, evec = np.linalg.eig(self.R)
+            # evr = np.sort(evr)
             fullS = np.matmul(sp.linalg.sqrtm(self.R), np.random.randn(self.n_sets * self.signum, self.M))
 
         elif self.Distr == 'laplacian':
-            signum_aug = self.n_sets * self.signum
-            fullS = np.zeros(signum_aug, self.M)
-            for m in range(self.M):
-                pass  # figure out how to generate laplacian samples in py
-            raise NotImplementedError
+            # signum_aug = self.n_sets * self.signum
+            # fullS = np.zeros(signum_aug, self.M)
+            # for m in range(self.M):
+            #     pass  # figure out how to generate laplacian samples in py
+            # raise NotImplementedError
+
+            fullS = np.matmul(sp.linalg.sqrtm(self.R), np.random.laplace(size=(self.n_sets * self.signum, self.M)))
 
         else:
             raise Exception("Unknown source distribution: {}".format(self.Distr))

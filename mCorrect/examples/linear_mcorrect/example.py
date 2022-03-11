@@ -24,7 +24,7 @@ def run_example():
 
     corr_structure = corr_obj.get_structure()
     corr_truth = corr_structure.corr_truth
-    datagen = MultisetDataGen_CorrMeans(corr_structure=corr_structure, tot_dims=tot_dims, M=300, color='white')  # chk color
+    datagen = MultisetDataGen_CorrMeans(corr_structure=corr_structure, tot_dims=tot_dims, Distr='laplacian', mixing='orth', M=300, color='white')  # chk color
     X, _ = datagen.generate()
     corr_test = jointEVD(X, B=1000)
     corr_estimate, d_cap = corr_test.find_structure()

@@ -11,8 +11,8 @@ with open('requirements.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 setup(
-    name='Corramal',
-    version='0.1.0',
+    name='mCorrect',
+    version='1.0',
     description='Tools to perform correlation analysis',
     long_description=readme,
     author='Praneeth Balakrishna',

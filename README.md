@@ -28,7 +28,7 @@ To install the toolbox and the required packages, (it is recommended to create a
 
 cd mCorrect/
 
-python setup.py install
+python3 setup.py install
 
 ```
 

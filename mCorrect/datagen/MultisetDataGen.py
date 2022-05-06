@@ -5,6 +5,8 @@ import math
 import scipy as sp
 import scipy.linalg as spl
 from mCorrect.utils.helper import ismember, comb, list_find
+import matplotlib.pyplot as plt
+from mCorrect.datagen.exceptions import TransformError
 
 
 class MultisetDataGen_CorrMeans(object):
@@ -16,12 +18,12 @@ class MultisetDataGen_CorrMeans(object):
     """
 
     def __init__(self, corr_structure, tot_dims=None, mixing='orth', sigmad=10, sigmaf=3, snr=10, color='white',
-                 M=300, MAcoeff=1, ARcoeff=1, Distr='gaussian'):
+                 M=300, MAcoeff=1, ARcoeff=1, Distr='gaussian', transformation='linear', nonlinearities=None, degree=None):
         """
 
         Args:
             corr_structure (CorrelationStructure): Object containing the correlation structure information of
-            the generated correllation structure.
+            the generated correlation structure.
 
             x_corrs (array): List of tuples containing pair-wise combinations of the datasets.
             mixing (str): 'orth' or 'randn'. Describes the type of mixing matrix.
@@ -37,10 +39,20 @@ class MultisetDataGen_CorrMeans(object):
             MAcoeff (array): array of size 'degree of MA dependency' x 1. Moving average coefficients for colored noise.
             ARcoeff (array): array of size 'degree of AR dependency' x 1. Auto-regressive coefficients for colored noise.
             Distr (str): 'gaussian' or 'laplacian'. Specifies the distribution of the signal components.
+            transformation (array): list of strings. In case of default argument 'linear' no nonlinear transformations are applied.
+            degree (int): optional, not implemented yet.
         """
 
         self.n_sets = corr_structure.n_sets
         self.signum = corr_structure.signum
+        self.transform = transformation
+        self.nonlinearities, self.poly_degree = nonlinearities, degree
+        
+
+        if not (
+            ((self.nonlinearities is None) and (self.transform == 'linear')) or \
+            ((self.nonlinearities is not None) and (self.transform == 'nonlinear') and (len(self.nonlinearities) == self.n_sets))
+        ): raise TransformError(self.nonlinearities, self.transform, self.n_sets)
 
         if not tot_dims:
             self.tot_dims = self.signum
@@ -144,17 +156,9 @@ class MultisetDataGen_CorrMeans(object):
          Generates the data which is formed by mixing the signal with the desired type of noise
         """
         if self.Distr == 'gaussian':
-            # evr, evec = np.linalg.eig(self.R)
-            # evr = np.sort(evr)
             fullS = np.matmul(sp.linalg.sqrtm(self.R), np.random.randn(self.n_sets * self.signum, self.M))
 
         elif self.Distr == 'laplacian':
-            # signum_aug = self.n_sets * self.signum
-            # fullS = np.zeros(signum_aug, self.M)
-            # for m in range(self.M):
-            #     pass  # figure out how to generate laplacian samples in py
-            # raise NotImplementedError
-
             fullS = np.matmul(sp.linalg.sqrtm(self.R), np.random.laplace(size=(self.n_sets * self.signum, self.M)))
 
         else:
@@ -182,6 +186,26 @@ class MultisetDataGen_CorrMeans(object):
         else:
             raise Exception("Unknkown noise color option")
 
+    def map_string_to_function(self, name, deg=None):
+        if name == 'sigmoid':
+            func = lambda x: 1 / (1 + np.exp(-x))
+            return func
+
+        elif name == 'exp':
+            return np.exp
+        
+        # Note: apply some shift since it is only defined for positive values?
+        elif name == 'log':
+            return np.log
+
+        elif name == 'tanh':
+            return np.tanh
+
+        elif name == 'poly':
+            assert deg is not None
+            func = lambda x: x**deg
+            return func
+
     def generateNoiseObservation(self):
         """
         Compute the final observation (signal + noise)
@@ -191,9 +215,20 @@ class MultisetDataGen_CorrMeans(object):
         """
 
         for i in range(self.n_sets):
-            self.X[i] = self.A[i] @ self.S[i] + self.N[i]
+            #Z_ref = self.A[i] @ self.S[i] + self.N[i]
 
-        #return self.X
+            if self.transform == 'linear':
+                self.X[i] = self.A[i] @ self.S[i] + self.N[i]
+
+            elif self.transform == 'nonlinear':
+                func = self.map_string_to_function(self.nonlinearities[i], self.poly_degree)
+                self.X[i] = func(self.A[i] @ self.S[i] + self.N[i])
+
+            elif self.transform == 'multi-nonlinear':
+                raise NotImplemented
+
+            #plt.scatter(Z_ref[0], self.X[i][0])
+            #plt.show()
 
     def generate(self):
         """
